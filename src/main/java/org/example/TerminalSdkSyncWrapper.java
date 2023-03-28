@@ -48,7 +48,6 @@ public class TerminalSdkSyncWrapper {
         LogLevel logLevel = LogLevel.VERBOSE;
 
 
-// Pass in the current application context, your desired logging level, your token provider, and the listener you created
         if (!Terminal.isInitialized()) {
             Terminal.initTerminal(provider, listener, logLevel);
         }
