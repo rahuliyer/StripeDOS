@@ -16,9 +16,6 @@ public class TokenProvider implements ConnectionTokenProvider {
     @Override
     public void fetchConnectionToken(ConnectionTokenCallback callback) {
         try {
-            // Your backend should call /v1/terminal/connection_tokens and return the
-            // JSON response from Stripe. When the request to your backend succeeds,
-            // return the `secret` from the response to the SDK.
             String apiKey = StripeAPIKeyProvider.getApiKey();
 
             HttpClient httpClient = HttpClient.newHttpClient();
