@@ -47,5 +47,9 @@ public class Main {
         sdk.processPayment(pi).get();
 
         System.out.println("Success!");
+
+        System.out.println("Disconnecting reader");
+        sdk.disconnectReader().get();
+        System.out.println("Successfully disconnected");
     }
 }

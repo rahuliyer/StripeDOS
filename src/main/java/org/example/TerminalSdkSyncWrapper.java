@@ -192,4 +192,22 @@ public class TerminalSdkSyncWrapper {
 
         return f;
     }
+
+    CompletableFuture<Void> disconnectReader() {
+        CompletableFuture f = new CompletableFuture();
+
+        Terminal.getInstance().disconnectReader(new Callback() {
+            @Override
+            public void onSuccess() {
+                f.complete(null);
+            }
+
+            @Override
+            public void onFailure(@NotNull TerminalException e) {
+                f.completeExceptionally(e);
+            }
+        });
+
+        return f;
+    }
 }
