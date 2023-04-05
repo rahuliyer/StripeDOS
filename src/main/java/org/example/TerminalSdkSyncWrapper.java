@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class TerminalSdkSyncWrapper {
-    Cancelable mDiscoveryCancelable;
     List<Reader> mReaderList = Collections.synchronizedList(new ArrayList<>());
     TerminalSdkSyncWrapper() {
         TokenProvider provider = new TokenProvider();
@@ -55,17 +54,12 @@ public class TerminalSdkSyncWrapper {
 
     CompletableFuture<Void> discoverReaders(int timeout) {
         CompletableFuture<Void> f = new CompletableFuture();
-        mDiscoveryCancelable = Terminal.getInstance().discoverReaders(new DiscoveryConfiguration(timeout),
-                new DiscoveryListener() {
+        Terminal.getInstance().discoverReaders(new DiscoveryConfiguration(),
+                new ReadersCallback() {
                     @Override
-                    public void onUpdateDiscoveredReaders(@NotNull List<Reader> list) {
-                        mReaderList.addAll(list);
-                    }
-                },
-                new Callback() {
-                    @Override
-                    public void onSuccess() {
+                    public void onSuccess(List<Reader> readers) {
                         System.out.println("Finished discovering readers");
+                        mReaderList.addAll(readers);
                         f.complete(null);
                     }
 
@@ -79,29 +73,6 @@ public class TerminalSdkSyncWrapper {
         return f;
     }
 
-    void cancelDiscovery() {
-        mDiscoveryCancelable.cancel(new Callback() {
-            @Override
-            public void onSuccess() {
-                System.out.println("Successfully canceled discovery");
-            }
-
-            @Override
-            public void onFailure(@NotNull TerminalException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    void scheduleDiscoveryCancelation(int timeout) {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                cancelDiscovery();
-            }
-        }, timeout);
-    }
-
     List<Reader> getReaderList() {
         return mReaderList;
     }
@@ -110,7 +81,7 @@ public class TerminalSdkSyncWrapper {
     CompletableFuture<Void> connectReader(Reader reader) {
         CompletableFuture<Void> f = new CompletableFuture<>();
         Terminal.getInstance().connectInternetReader(reader,
-                new ConnectionConfiguration.InternetConnectionConfiguration(true),
+                new InternetConnectionConfiguration(true),
                 new ReaderCallback() {
                     @Override
                     public void onSuccess(@NotNull Reader reader) {

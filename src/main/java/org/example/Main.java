@@ -18,7 +18,6 @@ public class Main {
         TerminalSdkSyncWrapper sdk = new TerminalSdkSyncWrapper();
 // Since the Terminal is a singleton, you can call getInstance whenever you need it
         try {
-            sdk.scheduleDiscoveryCancelation(2000);
             sdk.discoverReaders(1).get();
         } catch (Exception e) {
             if (!e.getMessage().equals("DiscoverReaders was canceled by the user")) {
