@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello world!");
 
-        TerminalSdkSyncWrapper sdk = new TerminalSdkSyncWrapper();
+        TerminalSdkSyncWrapper sdk = TerminalSdkSyncWrapper.getInstance();
 // Since the Terminal is a singleton, you can call getInstance whenever you need it
         try {
             sdk.discoverReaders(1).get();

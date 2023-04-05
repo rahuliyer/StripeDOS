@@ -10,8 +10,9 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class TerminalSdkSyncWrapper {
-    List<Reader> mReaderList = Collections.synchronizedList(new ArrayList<>());
-    TerminalSdkSyncWrapper() {
+    private List<Reader> mReaderList = Collections.synchronizedList(new ArrayList<>());
+    private static TerminalSdkSyncWrapper mSDKWrapper = null;
+    private TerminalSdkSyncWrapper() {
         TokenProvider provider = new TokenProvider();
         provider.fetchConnectionToken(new ConnectionTokenCallback() {
             @Override
@@ -50,6 +51,14 @@ public class TerminalSdkSyncWrapper {
         if (!Terminal.isInitialized()) {
             Terminal.initTerminal(provider, listener, logLevel);
         }
+    }
+
+    public static TerminalSdkSyncWrapper getInstance() {
+        if (mSDKWrapper == null) {
+            mSDKWrapper = new TerminalSdkSyncWrapper();
+        }
+
+        return mSDKWrapper;
     }
 
     CompletableFuture<Void> discoverReaders(int timeout) {
